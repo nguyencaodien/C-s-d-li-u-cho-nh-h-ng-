@@ -1,0 +1,113 @@
+Table NhanVien {
+  MaNhanVien integer [primary key]
+  TenNhanVien varchar
+  NgaySinh date
+  CaLam varchar
+  DiaChi varchar
+  QuanLi integer [note: 'Mã nhân viên quản lý (FK)']
+}
+
+Table VaiTro {
+  MaVaiTro integer [primary key]
+  TenVaiTro varchar
+}
+
+Table BanAn {
+  MaBanAn integer [primary key]
+  SoLuong integer
+  MaNhanVien integer [not null]//FK to NhanVien
+}
+
+Table MonAn {
+  MaMonAn integer [primary key]
+  TenMonAn varchar
+  Gia decimal
+}
+
+Table PhongAn {
+  MaPhongAn integer [primary key]
+  MaTiec interger [not null] //FK to Tiec
+  TenPhong varchar
+  TinhTrangPhong varchar
+}
+
+Table Tiec {
+  MaTiec integer [primary key]
+  TenTiec varchar
+  Gia decimal
+  SoLuongKhach integer
+  MaPhongAn integer [not null] // FK to PhongAn
+}
+
+Table ThoiGian {
+  MaThoiGian integer [primary key]
+  Ngay date
+  Thang integer
+  Nam integer
+}
+
+Table HoaDon {
+  MaHoaDon integer [primary key]
+  NgayThanhToan timestamp
+  SoTien decimal
+  PhuongThucThanhToan varchar
+  TrangThai varchar
+  MaNhanVien integer [not null] // FK to NhanVien
+}
+
+Table PhanCong {
+  MaNhanVien integer [not null]
+  MaVaiTro integer [not null]
+}
+
+Table ChiTietTiec {
+  MaTiec integer [not null]
+  MaVaiTro integer [not null]
+}
+
+Table KhachHang {
+  MaKhachHang integer [primary key]
+  MaTiec interger [not null]//FK to Tiec
+  TenKhachHang varchar
+  DiaChiKhachHang varchar
+  NgaySinhKhachHang date
+}
+
+Table MonAnTheoNgay {
+  MaThoiGian integer [not null]
+  MaMonAn integer [not null]
+  SoLuongDuKien integer
+  GhiChu varchar
+}
+
+Table ThucDon {
+  MaMon integer [not null]
+  MaTiec integer [not null]
+}
+
+Table BepAn {
+  MaBepAn integer [primary key]
+  MaMonAn integer [not null] //FK to MonAn
+  TenBepAn varchar
+}
+
+Ref: NhanVien.MaNhanVien < NhanVien.QuanLi // Quan hệ đệ quy
+Ref: NhanVien.MaNhanVien < HoaDon.MaNhanVien // 1-N giữa Nhân viên và Hóa đơn
+Ref: NhanVien.MaNhanVien < BanAn.MaNhanVien // 1-N giữa Nhân viên và Bàn ăn
+
+Ref: NhanVien.MaNhanVien < PhanCong.MaNhanVien // N-N giữa Nhân viên và Vai trò
+Ref: VaiTro.MaVaiTro < PhanCong.MaVaiTro // N-N giữa Vai trò và Nhân viên
+
+Ref: Tiec.MaTiec < ChiTietTiec.MaTiec // N-N giữa Tiệc và Vai trò
+Ref: VaiTro.MaVaiTro < ChiTietTiec.MaVaiTro // N-N giữa Vai trò và Tiệc
+
+Ref: Tiec.MaTiec < ThucDon.MaTiec // N-N giữa Tiệc và Món ăn
+Ref: MonAn.MaMonAn < ThucDon.MaMon // N-N giữa Món ăn và Thực đơn
+
+Ref: ThoiGian.MaThoiGian < MonAnTheoNgay.MaThoiGian // N-N giữa Thời gian và Món ăn
+Ref: MonAn.MaMonAn < MonAnTheoNgay.MaMonAn // N-N giữa Món ăn và Thời gian
+
+Ref: Tiec.MaTiec < KhachHang.MaTiec // 1-N giữa Tiệc và Khách hàng
+Ref: Tiec.MaTiec < PhongAn.MaTiec // 1-N giữa Tiệc và Phòng ăn
+
+Ref: BepAn.MaMonAn < MonAn.MaMonAn // 1-N giữa Bếp ăn và Món ăn
